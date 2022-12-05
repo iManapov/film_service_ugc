@@ -18,7 +18,7 @@ class ClickHouseSettings(BaseSettings):
     """Конфиг ClickHouse"""
 
     host: str = Field('localhost', env='CLICKHOUSE_HOST')
-    database: str = Field('name', env='CLICKHOUSE_DB')
+    wait_time: int = 30
 
     class Config:
         env_file = ".env"

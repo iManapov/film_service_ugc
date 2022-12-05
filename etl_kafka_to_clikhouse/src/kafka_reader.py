@@ -1,15 +1,41 @@
-from kafka import KafkaConsumer
+from abc import ABC, abstractmethod
 
-from core.config import kafka_conf
+from kafka import KafkaConsumer, errors as kafka_errors
+
+from core.config import KafkaSettings
 from src.models.message import Message
+from src.backoff import backoff
 
 
-def read_kafka_data() -> list[Message]:
-    consumer = KafkaConsumer(
-        kafka_conf.topic_name,
-        bootstrap_servers=[kafka_conf.host],
-        auto_offset_reset=kafka_conf.auto_offset_reset,
-        group_id=kafka_conf.group_id,
-    )
-    for message in consumer:
-        yield Message(message.key, message.value)
+class AbstractReader(ABC):
+    """Абстрактный класс для подключения к хранилищу."""
+
+    @abstractmethod
+    def read_data(self) -> list[Message]:
+        pass
+
+
+class KafkaReader(AbstractReader):
+    """Класс для подключения к Kafka"""
+    def __init__(self, conf: KafkaSettings):
+        self.__conf = conf
+        self.__consumer = None
+        self.__connect()
+
+    @backoff(error=kafka_errors.NoBrokersAvailable)
+    def __connect(self):
+        self.__consumer = KafkaConsumer(
+            self.__conf.topic_name,
+            bootstrap_servers=[self.__conf.host],
+            auto_offset_reset=self.__conf.auto_offset_reset,
+            group_id=self.__conf.group_id,
+        )
+
+    def read_data(self) -> list[Message]:
+        """
+        Метод для чтения сообщений из Kafka
+
+        :return: список сообщений
+        """
+        for message in self.__consumer:
+            yield Message(message.key, message.value)
