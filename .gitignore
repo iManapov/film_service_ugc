@@ -132,4 +132,4 @@ dmypy.json
 
 .python-version
 
-/src/core/docker.env
+event_writer_api/src/core/docker.env
