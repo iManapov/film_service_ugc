@@ -1,3 +1,4 @@
+import gc
 import time
 
 from src.kafka_reader import KafkaReader
@@ -17,6 +18,7 @@ def main():
             clickhouse.write_messages(messages)
             logger.debug('%s rows inserted', len(messages))
             messages = []
+            gc.collect()
             start = time.time()
 
 
