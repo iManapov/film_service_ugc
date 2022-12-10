@@ -8,6 +8,7 @@ class KafkaSettings(BaseSettings):
     host: str = Field('localhost:9092', env='KAFKA_HOST')
     auto_offset_reset: str = 'earliest'
     group_id: str = 'echo-messages-to-stdout'
+    enable_auto_commit = False
 
     class Config:
         env_file = ".env"

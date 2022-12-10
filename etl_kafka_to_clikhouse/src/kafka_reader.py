@@ -14,6 +14,10 @@ class AbstractReader(ABC):
     def read_data(self) -> list[Message]:
         pass
 
+    @abstractmethod
+    def commit(self):
+        pass
+
 
 class KafkaReader(AbstractReader):
     """Класс для подключения к Kafka"""
@@ -28,6 +32,7 @@ class KafkaReader(AbstractReader):
             self.__conf.topic_name,
             bootstrap_servers=[self.__conf.host],
             auto_offset_reset=self.__conf.auto_offset_reset,
+            enable_auto_commit=self.__conf.enable_auto_commit,
             group_id=self.__conf.group_id,
         )
 
@@ -39,3 +44,8 @@ class KafkaReader(AbstractReader):
         """
         for message in self.__consumer:
             yield Message(message.key, message.value)
+
+    def commit(self):
+        """Метод для подтверждения прочтения сообщения."""
+
+        self.__consumer.commit()

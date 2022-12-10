@@ -16,6 +16,7 @@ def main():
         messages.append(message)
         if time.time() - start > clickhouse_conf.wait_time:
             clickhouse.write_messages(messages)
+            kafka.commit()
             logger.debug('%s rows inserted', len(messages))
             messages = []
             gc.collect()
