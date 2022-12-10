@@ -1,0 +1,65 @@
+@startuml
+skinparam componentStyle uml2
+actor Пользователь as Client
+actor Менеджер as Manager
+actor Администратор as Admin
+actor Аналитик as Analitic #Yellow
+
+component WebApp
+
+
+package "Backend" {
+    interface JWT_KEY
+    [Backend и панель\nуправления\n(Django)] as Django
+    [Backend\n(Flask)] as Flask
+    [Backend\n(FastAPI)\n movies] as FastAPI_movies
+    [Backend\n(FastAPI)\n UGC] as FastAPI_ugc
+    JWT_KEY -right- FastAPI_movies
+    JWT_KEY -left- Flask
+}
+
+component "Storages" {
+    database PostgreSQL {
+        frame "Content scheme" {
+            [Хранение контента] as Postgre_Content
+        }
+        frame "Auth scheme" {
+            [Хранение информации о пользователях] as Postgre_Auth
+        }
+    }
+    database ElasticSearch
+    database Redis {
+        frame "Auth" {
+            [Хранение недействительных access-токенов\n и действующих refresh-токенов] as Redis_Auth
+        }
+        frame "Cache" {
+            [Хранение в кеше/получение из кеша результатов запроса] as Redis_Cache
+        }
+    }
+    database Kafka #Yellow
+    database ClickHouse #Yellow
+}
+
+Manager -down-> WebApp #Orange: Управление контентом
+Client -> WebApp #Green: Просмотр информации о фильмах, актерах и жанрах
+Client -> WebApp #Blue: Регистрация, аутентификация и авторизация
+Admin -up-> WebApp #Gray: Управление пользователями и ролями
+ClickHouse -up-> Analitic: Данные для аналитики
+
+WebApp -> Django #Orange: Запросы на добавление, изменение, \n редактирование и удаление контента
+WebApp -> FastAPI_movies #Green: Запросы на предоставление \n информации о фильмах, жанрах и актерах
+WebApp -up-> Flask #Blue: Запросы на регистрацию, \nвыдачу/отзыв JWT-токенов
+WebApp -> Flask #Gray: Запросы на управление пользователями и ролями
+WebApp -> FastAPI_ugc #Purple
+
+Django -down-> Postgre_Content
+ElasticSearch -down-> FastAPI_movies: Выдача результатов о фильмах,\n актерах и жанрах в том числе с использованием\n полнотекстового поиска
+FastAPI_movies <-down-> Redis_Cache
+Flask <-> Postgre_Auth
+Flask <-> Redis_Auth
+FastAPI_ugc -> Kafka
+
+Postgre_Content ..> ElasticSearch: ETL
+Kafka ..> ClickHouse: ETL
+
+@enduml
