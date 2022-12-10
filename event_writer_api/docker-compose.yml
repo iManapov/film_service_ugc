@@ -5,8 +5,8 @@ services:
     image: confluentinc/cp-zookeeper:7.3.0
     hostname: zookeeper
     container_name: zookeeper
-    ports:
-      - "2181:2181"
+    expose:
+      - "2181"
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -17,9 +17,9 @@ services:
     container_name: broker
     depends_on:
       - zookeeper
-    ports:
-      - "9092:9092"
-      - "9101:9101"
+    expose:
+      - "9092"
+      - "9101"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
@@ -46,8 +46,8 @@ services:
     container_name: schema-registry
     depends_on:
       - broker
-    ports:
-      - "8081:8081"
+    expose:
+      - "8081"
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
@@ -60,8 +60,8 @@ services:
     depends_on:
       - broker
       - schema-registry
-    ports:
-      - "8083:8083"
+    expose:
+      - "8083"
     environment:
       CONNECT_BOOTSTRAP_SERVERS: 'broker:29092'
       CONNECT_REST_ADVERTISED_HOST_NAME: connect
@@ -92,8 +92,8 @@ services:
       - schema-registry
       - connect
       - ksqldb-server
-    ports:
-      - "9021:9021"
+    expose:
+      - "9021"
     environment:
       CONTROL_CENTER_BOOTSTRAP_SERVERS: 'broker:29092'
       CONTROL_CENTER_CONNECT_CONNECT-DEFAULT_CLUSTER: 'connect:8083'
@@ -113,8 +113,8 @@ services:
     depends_on:
       - broker
       - connect
-    ports:
-      - "8088:8088"
+    expose:
+      - "8088"
     environment:
       KSQL_CONFIG_DIR: "/etc/ksql"
       KSQL_BOOTSTRAP_SERVERS: "broker:29092"
@@ -166,8 +166,8 @@ services:
     depends_on:
       - broker
       - schema-registry
-    ports:
-      - "8082:8082"
+    expose:
+      - "8082"
     hostname: rest-proxy
     container_name: rest-proxy
     environment:
@@ -192,5 +192,5 @@ services:
       - ./data:/data/:ro
     depends_on:
       - api
-    ports:
-      - "8005:80"
+    expose:
+      - "8005"

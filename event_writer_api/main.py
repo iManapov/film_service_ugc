@@ -6,8 +6,6 @@ from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi_jwt_auth import AuthJWT
 from aiokafka import AIOKafkaProducer
-from kafka import errors as kafka_errors
-from time import sleep
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
