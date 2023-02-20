@@ -10,16 +10,14 @@ from src.services.films import EventService, get_event_service
 from src.core.config import settings
 from src.models.event import EventBody, EventResponse
 
-# Объект router, в котором регистрируем обработчики
+
 router = APIRouter()
 
 
 @router.post('/{film_id}/event',
              response_model=EventResponse,
-             summary='Запись ивента в Kafka',
-             description='''
-             Асинхронная запись ивента в Kafka
-             '''
+             summary='Write event into Kafka',
+             description='Async Write event into Kafka'
              )
 async def event_handler(
         film_id: uuid.UUID,
@@ -28,9 +26,8 @@ async def event_handler(
         authorize: AuthJWT = Depends(),
         event_service: EventService = Depends(get_event_service)
     ):
-    """
-    Записывает временную метку unix timestamp, на которой сейчас находится пользователь при просмотре фильма.
-    """
+    """Records the unix timestamp of user's current watching progress of a movie."""
+
     try:
         authorize.jwt_required()
     except JWTDecodeError:

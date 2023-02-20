@@ -1,7 +1,7 @@
 
 
 class Message:
-    """ Модель одного сообщения из Kafka"""
+    """Message model in Kafka"""
 
     def __init__(self, user_movie_ids: bytes, timestamp: bytes):
         self.user_id: str = user_movie_ids.decode("utf-8").split('+')[0]

@@ -1,5 +1,10 @@
-# Проектная работа 8 спринта
+# User-generated content service
 
-Ccылка на репозиторий:
+## UGC Api
 
-https://github.com/san100791/ugc_sprint_1
+[Documentation](event_writer_api/README.md)
+
+
+## UGC ETL Kafka to ClikHouse
+
+[Documentation](etl_kafka_to_clikhouse/README.md)

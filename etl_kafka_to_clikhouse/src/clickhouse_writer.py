@@ -9,7 +9,7 @@ from core.log_writer import logger
 
 
 class AbstractWriter(ABC):
-    """Абстрактный класс для подключения к хранилищу."""
+    """Abstract class for database"""
 
     @abstractmethod
     def write_messages(self, messages: list[Message]):
@@ -17,7 +17,7 @@ class AbstractWriter(ABC):
 
 
 class ClickHouseWriter(AbstractWriter):
-    """Класс для подключения к ClickHouse"""
+    """Class for connecting to ClickHouse"""
 
     def __init__(self, conf: ClickHouseSettings):
         self.__conf = conf
@@ -38,13 +38,13 @@ class ClickHouseWriter(AbstractWriter):
 
     def write_messages(self, messages: list[Message]):
         """
-        Метод записи сообщений в ClickHouse
+        Writes message to ClikHouse
 
-        :param messages: список сообщений
+        :param messages: list of messages
         """
+
         try:
             self.__write_message(messages)
         except (ch_errors.NetworkError, EOFError):
             self.__connect()
             self.__write_message(messages)
-

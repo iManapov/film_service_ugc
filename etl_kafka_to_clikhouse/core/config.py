@@ -2,7 +2,7 @@ from pydantic import BaseSettings, Field
 
 
 class KafkaSettings(BaseSettings):
-    """Конфиг Kafka"""
+    """Kafka config"""
 
     topic_name: str = 'views'
     host: str = Field('localhost:9092', env='KAFKA_HOST')
@@ -16,7 +16,7 @@ class KafkaSettings(BaseSettings):
 
 
 class ClickHouseSettings(BaseSettings):
-    """Конфиг ClickHouse"""
+    """ClickHouse config"""
 
     host: str = Field('localhost', env='CLICKHOUSE_HOST')
     wait_time: int = 30
@@ -31,7 +31,7 @@ kafka_conf = KafkaSettings()
 
 
 class LoggerSettings(BaseSettings):
-    """Конфиг логирования."""
+    """Logger config"""
 
     version: int = 1
     disable_existing_loggers: bool = False

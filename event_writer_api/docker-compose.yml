@@ -179,6 +179,7 @@ services:
   api:
     container_name: fastapi-events
     build: .
+    env_file: .env
     expose:
       - "8001"
     depends_on:

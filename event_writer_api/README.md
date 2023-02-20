@@ -1,36 +1,37 @@
-# Код FAST API приложения
+# User-generated content Api
 
-## Локальный запуск
-Предварительно необходимо создать файл `src/core/.env` со следующими параметрами:
+## Local run
+Firstly create env file `src/core/.env` with following parameters:
 ```dotenv
-SERVICE_SECRET_KEY - секретный ключ, должен совпадать с сервисом авторизации
-KAFKA_HOST - сервер кафки
-KAFKA_TOPIC - название топика в кафка
+SERVICE_SECRET_KEY - secret key from uth service
+KAFKA_HOST - Kafka host
+KAFKA_TOPIC - topic name in Kafka
 ```
 
-Для запуска api под `uvicorn`:
+To run under `uvicorn` execute following commands:
 ```shell
 uvicorn main:app --reload --host localhost --port 8001
 ```
-Для запуска api под `gunicorn`:
+To run under `gunicorn` execute following commands:
 ```shell
 gunicorn main:app --workers 4 --worker-class uvicorn.workers.UvicornH11Worker --bind 0.0.0.0:8001
 ```
 
-Адрес документации: http://localhost:8001/apidocs/
+OpenApi documentation url: http://localhost:8001/apidocs/
 
 
-## Запуск в Docker
-Предварительно необходимо создать файл `src/core/docker.env` со следующими параметрами:
+## Run in Docker
+
+Create `.env` file in the root folder of project with following parameters:
 ```dotenv
-SERVICE_SECRET_KEY - секретный ключ, должен совпадать с сервисом авторизации
-KAFKA_HOST=broker:29092
-KAFKA_TOPIC - название топика в кафка
+SERVICE_SECRET_KEY - secret key from uth service
+KAFKA_HOST - Kafka host
+KAFKA_TOPIC - topic name in Kafka
 ```
 
-Для запуска api в `Docker` необходимо выполнить команду
+To run api in `Docker` execute following command:
 ```shell
 docker compose up --build
 ```
 
-Адрес документации: http://localhost:8005/apidocs/
+OpenApi documentation url: http://localhost/api/openapi/

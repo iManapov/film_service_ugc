@@ -8,7 +8,7 @@ from src.backoff import backoff
 
 
 class AbstractReader(ABC):
-    """Абстрактный класс для подключения к хранилищу."""
+    """Abstract class for consumer"""
 
     @abstractmethod
     def read_data(self) -> list[Message]:
@@ -20,7 +20,8 @@ class AbstractReader(ABC):
 
 
 class KafkaReader(AbstractReader):
-    """Класс для подключения к Kafka"""
+    """Kafka consumer"""
+
     def __init__(self, conf: KafkaSettings):
         self.__conf = conf
         self.__consumer = None
@@ -38,14 +39,14 @@ class KafkaReader(AbstractReader):
 
     def read_data(self) -> list[Message]:
         """
-        Метод для чтения сообщений из Kafka
+        Yields messages from Kafka
 
-        :return: список сообщений
+        :return: list of messages
         """
         for message in self.__consumer:
             yield Message(message.key, message.value)
 
     def commit(self):
-        """Метод для подтверждения прочтения сообщения."""
+        """Commits message read"""
 
         self.__consumer.commit()

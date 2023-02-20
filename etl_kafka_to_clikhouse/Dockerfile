@@ -13,8 +13,5 @@ RUN  apt-get update \
      && pip install -r requirements.txt
 
 COPY . .
-COPY core/docker.env core/.env
-
 
 ENTRYPOINT ["python", "main.py"]
-

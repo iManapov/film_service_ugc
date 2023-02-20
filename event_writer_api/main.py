@@ -14,10 +14,10 @@ from src.api.v1 import films
 from src.core.config import settings
 from src.db import kafka
 
-# Создание FastAPI приложения
+
 app = FastAPI(
-    title='name',
-    description="API записи информации о просмотре фильма в Kafka",
+    title='User-generated content api',
+    description="User-generated content api",
     docs_url='/api/openapi',
     openapi_url='/api/openapi.json',
     default_response_class=ORJSONResponse,
@@ -25,7 +25,6 @@ app = FastAPI(
 )
 
 
-# callback to get your configuration
 @AuthJWT.load_config
 def get_config():
     return settings
@@ -33,7 +32,6 @@ def get_config():
 
 @app.on_event('startup')
 async def startup():
-    # Подключаемся к базам при старте сервера
     kafka.kafka = AIOKafkaProducer(bootstrap_servers=settings.kafka_server)
     await kafka.kafka.start()
 
@@ -43,7 +41,6 @@ async def shutdown_event():
     await kafka.kafka.stop()
 
 
-# Подключаем роутер к серверу, указав префикс /v1/films
 app.include_router(films.router, prefix='/api/v1/films', tags=['films'])
 
 
